@@ -1,6 +1,7 @@
 /*****************************************************************************
  *
- *  Header para librería para el uso de árboles 
+ *  Header para librería para el uso de árboles genericos (soportan cualquiér
+ *  tipo de dato)
  *
  *  Atención, se deve de crear una función para destruir
  *  los datos asignados a los nodos
@@ -14,12 +15,11 @@
 /*****************************************************************************
  *
  *	Estructura de un nodo
- *	que apunta a varios nodos
- *
+ * 
  *****************************************************************************/
 typedef struct _BinTreeNode
 {
-	void *data;
+	void *data; //esto es para que apunte a cualquiér tipo de dato
 
 	struct _BinTreeNode *right;
 	struct _BinTreeNode *left;
@@ -75,6 +75,7 @@ void bintree_destroy(BinTree *tree);
 /*****************************************************************************
  * 
  * Inserta un nodo como el izquierdo de uno dado
+ * Si el nodo es NULL , el nuevo nodo será insertado en root
  * Si el nodo ya tiene un hijo izquierdo REGRESA -1
  * Si tiene exito REGRESA 0
  *
@@ -121,7 +122,7 @@ void bintree_rem_right(BinTree *tree, BinTreeNode *node);
 
 /*****************************************************************************
  *
- * Determina si un nodo es nulo
+ * Determina si un nodo es fin de rama
  *
  *****************************************************************************/
 #define bintree_is_eob(node) ((node) == NULL)
