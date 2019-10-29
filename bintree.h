@@ -19,10 +19,10 @@
  *****************************************************************************/
 typedef struct _BinTreeNode
 {
-	void* data;
+	void *data;
 
-	struct _BinTreeNode* right;
-	struct _BinTreeNode* left;
+	struct _BinTreeNode *right;
+	struct _BinTreeNode *left;
 
 } BinTreeNode;
 
@@ -37,10 +37,10 @@ typedef struct _BinTree
 	size_t size;
 
 	//función definida por el usuario para destruir datos
-	void (*destroy)(void* data);
+	void (*destroy)(void *data);
 
-	BinTreeNode* root;
-}
+	BinTreeNode *root;
+} BinTree;
 
 /*****************************************************************************
  *
@@ -54,6 +54,9 @@ typedef struct _BinTree
 /*****************************************************************************
  *
  * Inicializa arbol binario
+ * El argumento destroy debe de ser una función para liberar la memoria alojada
+ * 	de forma dinámica.
+ * Si el argumento no debe de ser liberado, destroy debe ser NULL
  *
  *****************************************************************************/
 void bintree_init(BinTree *tree, void (*destroy)(void *data));
@@ -61,6 +64,10 @@ void bintree_init(BinTree *tree, void (*destroy)(void *data));
 /*****************************************************************************
  * 
  * Vacía un arbol
+ * No otra operación debe de ser usada en el árbol amenos que se inicialice 
+ * 	otra vez.
+ * Esta función remueve todos los nodos y limpia los datos con la función
+ * destroy si esta no es NULL
  *
  *****************************************************************************/
 void bintree_destroy(BinTree *tree);
@@ -68,30 +75,35 @@ void bintree_destroy(BinTree *tree);
 /*****************************************************************************
  * 
  * Inserta un nodo como el izquierdo de uno dado
+ * Si el nodo ya tiene un hijo izquierdo REGRESA -1
+ * Si tiene exito REGRESA 0
  *
  *****************************************************************************/
-int bintree_ins_left(BinTree *tree, BiTreeNode *node, const void *data);
+int bintree_ins_left(BinTree *tree, BinTreeNode *node, const void *data);
 
 /*****************************************************************************
  *
  * Inserta un nodo como el derecho de uno dado
  *
  *****************************************************************************/
-int bintree_ins_right(BinTree *tree, BiTreeNode *node, const void *data);
+int bintree_ins_right(BinTree *tree, BinTreeNode *node, const void *data);
 
 /*****************************************************************************
  *
- * Borra nodo izquierdo
+ * Borra el subarbol con raiz en el nodo izquierdo
+ * Si el nodo es NULL, todo el árbol será borrado
+ * Se usa la función destroy
  *
  *****************************************************************************/
-void bintree_rem_left(BinTree *tree, BiTreeNode *node);
+void bintree_rem_left(BinTree *tree, BinTreeNode *node);
 
 /*****************************************************************************
  *
- * Borra nodo derecho
+ * Borra el subarbol con raiz en el nodo derecho
+ * similar a bintree_rem_left
  *
  *****************************************************************************/
-void bintree_rem_right(BinTree *tree, BiTreeNode *node);
+void bintree_rem_right(BinTree *tree, BinTreeNode *node);
 
 /*****************************************************************************
  *
