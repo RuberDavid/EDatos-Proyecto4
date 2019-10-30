@@ -12,7 +12,7 @@ primero compilar la librería en un archivo objeto con:
 y al compilar el programa incluir el archivo objeto de la siguiente manera:
 
         gcc miprograma.c bintree.o
-##Instalando un sistema POSIX en Windows
+## Instalando un sistema POSIX en Windows
 
 
 
