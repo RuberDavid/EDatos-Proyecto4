@@ -10,6 +10,21 @@
  *		 G | H | I
  *		   |   |
  *
+ *						A
+ *
+ *
+ *				AB					B
+ *
+ *
+ *		ABC			AC		BC					C
+ *
+ *				
+ *				ACB		 BCA     	BA			CA
+ *								
+ *							BAC			CAB		CB
+ *											
+ *											CBA
+ *
  *****************************************************************************/
 
 #include <stdio.h>
@@ -117,8 +132,8 @@ void fillMoves( BinTree *tree)
 	 *
 	 *****************************************************************************/
 
-	void right_eq_replaceLastMv( BinTree *sometree, BinTreeNode *someNode);
-	void left_eq_concatNextMv(   BinTree *sometree, BinTreeNode *someNode);
+	void right_eq_replaceLastMv( BinTree *someTree, BinTreeNode *someNode);
+	void left_eq_concatNextMv(   BinTree *someTree, BinTreeNode *someNode);//TODO
 
 	BinTreeNode *node;
 	Info inforoot;
@@ -144,8 +159,8 @@ void fillMoves( BinTree *tree)
 
 	node= bintree_root(tree);
 
-	right_eq_replaceLastMv( node );
-	left_eq_concatNextMv( node );
+	right_eq_replaceLastMv( tree,  node );//estas dos son recursivas, así que crea e inicializa todo el árbol de juego
+	left_eq_concatNextMv(   tree,  node );
 	
 	return;
 
@@ -158,55 +173,70 @@ void fillMoves( BinTree *tree)
  *
  *****************************************************************************/
 
-void right_eq_replaceLastMv( BinTree *sometree, BinTreeNode *someNode)
+void right_eq_replaceLastMv( BinTree *someTree, BinTreeNode *someNode)
 {
-	bool not_moved( char move, char* done , size_t len );//TODO
 
 	Info *infonode;//TODO  inicializar y pasar
-	char* other=NULL;
-	char last[NUM_OF_MOVES];
+	char* other=NULL;//esta se la meto a mi nodo
+	char aux[NUM_OF_MOVES];//con esta manipulo mi cadena
 	char next='0';
 	size_t len;
 
+	//Aloja memoria para miembro para los DATOS del nodo
 	if( (infonode = (Info*)malloc( sizeof(Info) ) ) == NULL )
 	{
-		fprintf(stderr,"error al alojar memoria");
+		fprintf(stderr,"error al alojar memoria para un info");
 		return;
 	}
-	
-	//copia la cadena del nodo pasado para facilitar el manejo
-	strcpy( last, bintree_moves( someNode ) );
-	len=strlen( last );
-	if( (other = (char*)malloc( sizeof(char)*(len) ) == NULL ))
-	{
-		fprintf(stderr,"error al alojar memoria");
-		return;
-	}
+	//NOTA: no se necesita alojar memoria pal nodo por que esto lo hace la
+	//	función bintree_ins_rigt y la otra similar a esa
 
-	//encuéntra el siguiente movimiento posible
+	//copia la cadena del nodo pasado para facilitar el manejo
+	strcpy( aux, bintree_moves( someNode ) );
+
+	//como el miebro moves del nodo a insertar debe de ser de la misma longitúd, 
+	//se obtiene primero esta
+	len=strlen( aux );
+	
+
+
+	//De el complemento de jugadas totales y las hechas hasta este punto
+	//seleccióna la primera de estas en el orden que está en el arreglo global
+	//si no, se ha terminado esta ramificación
 	for(size_t i=0; i<NUM_OF_MOVES ; i++)
 	{
-		//Busca en el arreglo global de jugadas
-		//si ya se ha hecho la i-esima jugada
-		//si no, se seleccióna como la que hay que remplazar
-		//y se sale del for
-		if( not_moved( Movimientos[i], last, len) )
+		if( strchr( aux , Movimientos[i] ) != NULL )
 		{
 			next=Movimientos[i];
+			//Remplaza el último mokvimento
+			//Aloja memoria para la CADENA  mienbro moves de infonode
+			if( (other = (char*)malloc( sizeof(char)*(len) ) == NULL ))
+			{
+				fprintf(stderr,"error al alojar memoria para una cadena");
+				return;
+			}
+
+			strcpy( other, aux );
+			other[len]=next;
+			info_init( infonode, other, 0.0 );
+			if( bintree_ins_rigt( tree, someNode, infonode ) != -1)
+				fprintf(stderr, "Error al crear hijo izquierdo");
+
+			//llama a las funciónes de llenado del árbol en ambos hijos
+			//del nuevo nodo( que es el derecho del evaluado en la función
+			//de arriba
+			right_eq_replaceLastMv( bintree_right( someNode ) );
+			left_eq_concatNextMv( bintree_left( someNode ) );
 			break;
+		}else
+		{
+
+			return;
 		}
 	}
 
-	
-	if( next != '0' )
-	{
-		last[len]=next;
-		strcpy(other, last );
-		bintree_ins_right( 
-
-	bintree_ins_right(
-	
 }
+
 /*****************************************************************************
  *
  * 	Inserta en el nodo izquierdo un nodo con la siguiente posible jugada
@@ -215,8 +245,9 @@ void right_eq_replaceLastMv( BinTree *sometree, BinTreeNode *someNode)
  *
  *****************************************************************************/
 
-void left_eq_concatNextMv(  BinTree *sometree, BinTreeNode *someNode)
+void left_eq_concatNextMv(  BinTree *someTree, BinTreeNode *someNode)
 {
 
 }
+
 
